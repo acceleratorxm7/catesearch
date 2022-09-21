@@ -10,8 +10,7 @@ function App() {
   const [cate3, setCate3] = useState("");
   const [cate4, setCate4] = useState("");
   const [cate5, setCate5] = useState("");
-  const [items, setItems] = useState({});
-  const [logs, setLogs] = useState({});
+  const [results, setResults] = useState([]);
 
   const BASE_URL = "http://localhost:8080";
 
@@ -19,7 +18,6 @@ function App() {
 
     const getOptions   = async () => {
       let result = (await axios.get(`${BASE_URL}/options`)).data;
-      console.log(result);
       let cate1 = result.map(el => { 
         return { 
           value: el.category1, 
@@ -59,9 +57,10 @@ function App() {
     getOptions();
   }, []); 
   
-  const loadResults = () => {
-    console.log(cate1, cate2, cate3, cate4, cate5);
-    console.log("TEST");
+  const loadOptions = async () => {
+    console.log(cate1);
+    let result = (await axios.get(`${BASE_URL}/search?category1=${cate1.value}&category2=${cate2.value}&category3=${cate3.value}&category4=${cate4.value}&category5=${cate5.value}`)).data;
+    setResults(result);
   }
   
   return (
@@ -76,10 +75,24 @@ function App() {
         <Col><Select options={options[2]} onChange={choice => setCate3(choice)} /></Col>
         <Col><Select options={options[3]} onChange={choice => setCate4(choice)} /></Col>
         <Col><Select options={options[4]} onChange={choice => setCate5(choice)} /></Col>
-        <Col><Button className="w-100" onClick={loadResults()}>Run</Button></Col>
+        <Col><Button className="w-100" onClick={loadOptions}>Run</Button></Col>
       </Row>
 
       {
+        results.map((el, index) => {
+          return <div style={{marginTop:"30px"}}>
+            <h3>Results</h3>
+            <Row>
+              <Col key={index.toString()}><p>{el.category1}</p></Col>
+              <Col key={index.toString()}><p>{el.category2}</p></Col>
+              <Col key={index.toString()}><p>{el.category3}</p></Col>
+              <Col key={index.toString()}><p>{el.category4}</p></Col>
+              <Col key={index.toString()}><p>{el.category5}</p></Col>
+              <Col key={index.toString()}><p>{el.text}</p></Col>
+            </Row>
+          </div>
+
+        })
 
       }
     </Container>
