@@ -12,7 +12,7 @@ function App() {
   const [cate5, setCate5] = useState("");
   const [results, setResults] = useState([]);
 
-  const BASE_URL = "http://54.164.227.155:8080/";
+  const BASE_URL = "http://54.164.227.155:8080";
 
   useEffect(() => {
 
