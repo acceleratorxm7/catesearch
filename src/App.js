@@ -10,7 +10,9 @@ function App() {
   const [cate3, setCate3] = useState("");
   const [cate4, setCate4] = useState("");
   const [cate5, setCate5] = useState("");
-  const [results, setResults] = useState([]);
+  const [header, setHeader] = useState([]);
+  const [condition, setCondition] = useState([]);
+  const [item, setItem] = useState([]);
 
   const BASE_URL = "http://54.164.227.155:8080";
 
@@ -36,9 +38,10 @@ function App() {
   }, [cate1, cate2, cate3, cate4, cate5]); 
   
   const loadOptions = async () => {
-    console.log(cate1);
     let result = (await axios.get(`${BASE_URL}/search?category1=${cate1?.value || ''}&category2=${cate2?.value || ''}&category3=${cate3?.value || ''}&category4=${cate4?.value || ''}&category5=${cate5?.value || ''}`)).data;
-    setResults(result);
+    setHeader(result[0]);
+    setCondition(result[1]);
+    setItem(result[2]);
   }
   
   return (
@@ -56,10 +59,10 @@ function App() {
         <Col><Button className="w-100" onClick={loadOptions}>Run</Button></Col>
       </Row>
 
-      <h3>Header</h3>
+      {header.length > 0 && <h3>Header</h3>}
       {
-        results.map((el, index) => {
-          return el.type == "Header" && <div style={{marginTop:"30px"}}>
+        header.map((el, index) => {
+           return <div style={{marginTop:"30px"}}>
             <Row>
               <Col key={"HeaderCate1"+index.toString()}><p>{el.category1}</p></Col>
               <Col key={"HeaderCate2"+index.toString()}><p>{el.category2}</p></Col>
@@ -71,11 +74,11 @@ function App() {
         })
       }
 
-    <h3>Condition</h3>
+    {condition.length > 0 && <h3>Condition</h3>}
 
       {
-        results.map((el, index) => {
-          return el.type == "Condition" && <div style={{marginTop:"30px"}}>
+        condition.map((el, index) => {
+          return <div style={{marginTop:"30px"}}>
             <Row>
               <Col key={"ConditionCate1"+index.toString()}><p>{el.category1}</p></Col>
               <Col key={"ConditionCate2"+index.toString()}><p>{el.category2}</p></Col>
@@ -87,11 +90,10 @@ function App() {
         })
       }
 
-      <h3>Log</h3>
+      {item.length > 0 && <h3>Item</h3>}
       {
-          results.map((el, index) => {
+          item.map((el, index) => {
             return el.type == "Item" && <div style={{marginTop:"30px"}}>
-              <h3>Log</h3>
               <Row>
                 <Col key={"ItemCate1"+index.toString()}><p>{el.category1}</p></Col>
                 <Col key={"ItemCate2"+index.toString()}><p>{el.category2}</p></Col>
