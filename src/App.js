@@ -17,49 +17,27 @@ function App() {
   useEffect(() => {
 
     const getOptions   = async () => {
-      let result = (await axios.get(`${BASE_URL}/options`)).data;
-      let cate1 = result.map(el => { 
-        return { 
-          value: el.category1, 
-          label: el.category1 
-        }
-      });
-      let cate2 = result.map(el => { 
-        return { 
-          value: el.category2, 
-          label: el.category2 
-        }
-      });
-      let cate3 = result.map(el => { 
-        return { 
-          value: el.category3, 
-          label: el.category3 
-        }
-      });
-      let cate4 = result.map(el => { 
-        return { 
-          value: el.category4, 
-          label: el.category4 
-        }
-      });
-      let cate5 = result.map(el => { 
-        return { 
-          value: el.category5, 
-          label: el.category5 
-        }
-      });
+      let url = `${BASE_URL}/options?category1=${cate1?.value || ''}&category2=${cate2?.value || ''}&category3=${cate3?.value || ''}&category4=${cate4?.value || ''}&category5=${cate5?.value || ''}`;
+      let result = (await axios.get(url)).data;
 
-      let wrapper = [cate1, cate2, cate3, cate4, cate5];
+      let wrapper = result.map(el => {
+        return el.map(obj => {
+          return {
+            label: obj.cate,
+            value: obj.cate
+          }
+        })
+      })
 
       setOptions(wrapper);
     }
 
     getOptions();
-  }, []); 
+  }, [cate1, cate2, cate3, cate4, cate5]); 
   
   const loadOptions = async () => {
     console.log(cate1);
-    let result = (await axios.get(`${BASE_URL}/search?category1=${cate1.value}&category2=${cate2.value}&category3=${cate3.value}&category4=${cate4.value}&category5=${cate5.value}`)).data;
+    let result = (await axios.get(`${BASE_URL}/search?category1=${cate1?.value || ''}&category2=${cate2?.value || ''}&category3=${cate3?.value || ''}&category4=${cate4?.value || ''}&category5=${cate5?.value || ''}`)).data;
     setResults(result);
   }
   
@@ -78,23 +56,54 @@ function App() {
         <Col><Button className="w-100" onClick={loadOptions}>Run</Button></Col>
       </Row>
 
+      <h3>Header</h3>
       {
         results.map((el, index) => {
-          return <div style={{marginTop:"30px"}}>
-            <h3>Results</h3>
+          return el.type == "Header" && <div style={{marginTop:"30px"}}>
             <Row>
-              <Col key={index.toString()}><p>{el.category1}</p></Col>
-              <Col key={index.toString()}><p>{el.category2}</p></Col>
-              <Col key={index.toString()}><p>{el.category3}</p></Col>
-              <Col key={index.toString()}><p>{el.category4}</p></Col>
-              <Col key={index.toString()}><p>{el.category5}</p></Col>
-              <Col key={index.toString()}><p>{el.text}</p></Col>
+              <Col key={"HeaderCate1"+index.toString()}><p>{el.category1}</p></Col>
+              <Col key={"HeaderCate2"+index.toString()}><p>{el.category2}</p></Col>
+              <Col key={"HeaderCate3"+index.toString()}><p>{el.category3}</p></Col>
+              <Col key={"HeaderCate4"+index.toString()}><p>{el.category4}</p></Col>
+              <Col key={"HeaderCate5"+index.toString()}><p>{el.category5}</p></Col>
             </Row>
           </div>
-
         })
-
       }
+
+    <h3>Condition</h3>
+
+      {
+        results.map((el, index) => {
+          return el.type == "Condition" && <div style={{marginTop:"30px"}}>
+            <Row>
+              <Col key={"ConditionCate1"+index.toString()}><p>{el.category1}</p></Col>
+              <Col key={"ConditionCate2"+index.toString()}><p>{el.category2}</p></Col>
+              <Col key={"ConditionCate3"+index.toString()}><p>{el.category3}</p></Col>
+              <Col key={"ConditionCate4"+index.toString()}><p>{el.category4}</p></Col>
+              <Col key={"ConditionCate5"+index.toString()}><p>{el.category5}</p></Col>
+            </Row>
+          </div>
+        })
+      }
+
+      <h3>Log</h3>
+      {
+          results.map((el, index) => {
+            return el.type == "Item" && <div style={{marginTop:"30px"}}>
+              <h3>Log</h3>
+              <Row>
+                <Col key={"ItemCate1"+index.toString()}><p>{el.category1}</p></Col>
+                <Col key={"ItemCate2"+index.toString()}><p>{el.category2}</p></Col>
+                <Col key={"ItemCate3"+index.toString()}><p>{el.category3}</p></Col>
+                <Col key={"ItemCate4"+index.toString()}><p>{el.category4}</p></Col>
+                <Col key={"ItemCate5"+index.toString()}><p>{el.category5}</p></Col>
+                <Col key={"Result"+index.toString()}><p>{el.result}</p></Col>
+              </Row>
+            </div>
+          })
+        }
+
     </Container>
   );
 }
